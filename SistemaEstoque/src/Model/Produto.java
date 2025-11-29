@@ -51,7 +51,6 @@ public class Produto {
     }
 
     public boolean InsertProdutoBD(String nome, String descricao, int quantidade, double preco) throws SQLException {
-        // CORREÇÃO: Passamos ID 0, pois o banco irá gerar o ID correto.
         Produto objeto = new Produto(0, nome, descricao, quantidade, preco);
         dao.InsertProdutoBD(objeto);
         return true;
