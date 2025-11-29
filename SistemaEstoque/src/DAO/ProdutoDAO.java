@@ -25,7 +25,7 @@ public class ProdutoDAO {
             String database = "estoqueprodutos"; 
             String url = "jdbc:mysql://" + server + ":3306/" + database + "?useTimezone=true&serverTimezone=UTC";
             String user = "root";
-            String password = "";
+            String password = ""; // Verifique se seu MySQL tem senha
 
             return DriverManager.getConnection(url, user, password);
 
@@ -61,6 +61,7 @@ public class ProdutoDAO {
                 String desc = res.getString("descricao_produto");
                 int qtd = res.getInt("quantidade_estoque");
                 double preco = res.getDouble("preco");
+                // data_cadastro ignorada na listagem simples, mas pode ser adicionada
                 
                 Produto p = new Produto(id, nome, desc, qtd, preco);
                 MinhaLista.add(p);
@@ -73,16 +74,16 @@ public class ProdutoDAO {
     }
 
     public boolean InsertProdutoBD(Produto objeto) {
-        String sql = "INSERT INTO estoque(id_produto, nome_produto, descricao_produto, quantidade_estoque, preco, data_cadastro) VALUES(?,?,?,?,?, CURDATE())";
+        // CORREÇÃO: Removido id_produto do INSERT. O MySQL gera sozinho (AUTO_INCREMENT).
+        String sql = "INSERT INTO estoque(nome_produto, descricao_produto, quantidade_estoque, preco, data_cadastro) VALUES(?,?,?,?, CURDATE())";
 
         try {
             PreparedStatement stmt = this.getConexao().prepareStatement(sql);
 
-            stmt.setInt(1, objeto.getId());
-            stmt.setString(2, objeto.getNome());
-            stmt.setString(3, objeto.getDescricao());
-            stmt.setInt(4, objeto.getQuantidade());
-            stmt.setDouble(5, objeto.getPreco());
+            stmt.setString(1, objeto.getNome());
+            stmt.setString(2, objeto.getDescricao());
+            stmt.setInt(3, objeto.getQuantidade());
+            stmt.setDouble(4, objeto.getPreco());
             
             stmt.execute();
             stmt.close();
