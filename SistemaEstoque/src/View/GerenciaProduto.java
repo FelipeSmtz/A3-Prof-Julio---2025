@@ -16,7 +16,7 @@ public class GerenciaProduto extends javax.swing.JFrame {
     private void carregarTabela() {
         try {
             ProdutoDAO dao = new ProdutoDAO();
-            List<Produto> lista = dao.listarProdutos();
+            List<Produto> lista = dao.getMinhaLista();
 
             DefaultTableModel modelo = (DefaultTableModel) tabelaProdutos.getModel();
             modelo.setRowCount(0);
