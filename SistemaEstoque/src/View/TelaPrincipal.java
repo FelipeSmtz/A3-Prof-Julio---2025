@@ -1,6 +1,8 @@
 package View;
 
 public class TelaPrincipal extends javax.swing.JFrame {
+    
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TelaPrincipal.class.getName());
 
     public TelaPrincipal() {
         initComponents();
@@ -17,7 +19,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Stock 404 - Menu Principal");
+        setTitle("Stock 404 - Principal");
 
         jMenu1.setText("Arquivo");
 
@@ -74,13 +76,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
+            logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        java.awt.EventQueue.invokeLater(() -> {
-            new TelaPrincipal().setVisible(true);
-        });
+        java.awt.EventQueue.invokeLater(() -> new TelaPrincipal().setVisible(true));
     }
 
     private javax.swing.JMenu jMenu1;
