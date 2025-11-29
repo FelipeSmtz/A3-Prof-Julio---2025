@@ -46,7 +46,7 @@ public class GerenciaProduto extends javax.swing.JFrame {
 
         int id = (int) tabelaProdutos.getValueAt(linha, 0);
 
-        CadastrarProduto tela = new CadastrarProduto(id);
+        Cadastro tela = new Cadastro(); 
         tela.setVisible(true);
 
         dispose();
@@ -69,7 +69,7 @@ public class GerenciaProduto extends javax.swing.JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             try {
                 ProdutoDAO dao = new ProdutoDAO();
-                dao.excluirProduto(id);
+                dao.DeleteProdutoBD(id);
                 carregarTabela();
                 JOptionPane.showMessageDialog(null, "Produto removido!");
             } catch (Exception e) {
