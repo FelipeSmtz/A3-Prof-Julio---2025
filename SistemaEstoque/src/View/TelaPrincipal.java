@@ -1,16 +1,13 @@
 package View;
 
-import View.TelaCadastro;
 public class TelaPrincipal extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TelaPrincipal.class.getName());
 
     public TelaPrincipal() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     @SuppressWarnings("unchecked")
-
     private void initComponents() {
 
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -20,6 +17,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Stock 404 - Menu Principal");
 
         jMenu1.setText("Arquivo");
 
@@ -41,7 +39,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Edit");
+        jMenu2.setText("Sobre");
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
@@ -60,24 +58,15 @@ public class TelaPrincipal extends javax.swing.JFrame {
         pack();
     }
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
-        new GerenciaProduto().setVisible(true);
-    }
-private void jMenuItemGerenciarEstoqueActionPerformed(java.awt.event.ActionEvent evt) {                                                        
-
-    TelaGerenciarEstoque telaGerenciar = new TelaGerenciarEstoque();
-    telaGerenciar.setVisible(true);
-}
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
         new Cadastro().setVisible(true);
     }
-private void jMenuItemNovoProdutoActionPerformed(java.awt.event.ActionEvent evt) {                                                        
 
-    TelaCadastro telaCadastro = new TelaCadastro();
-    telaCadastro.setVisible(true);
-}
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
+        new GerenciaProduto().setVisible(true);
+    }
+
     public static void main(String args[]) {
- 
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -85,11 +74,13 @@ private void jMenuItemNovoProdutoActionPerformed(java.awt.event.ActionEvent evt)
                     break;
                 }
             }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        java.awt.EventQueue.invokeLater(() -> new TelaPrincipal().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> {
+            new TelaPrincipal().setVisible(true);
+        });
     }
 
     private javax.swing.JMenu jMenu1;
