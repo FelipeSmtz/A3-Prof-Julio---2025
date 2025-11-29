@@ -45,13 +45,14 @@ public class Produto {
     public String toString() {
         return "ID: " + this.id + " | Nome: " + this.nome + " | Preço: R$ " + this.preco;
     }
+    
     public ArrayList<Produto> getMinhaLista() {
         return dao.getMinhaLista();
     }
 
     public boolean InsertProdutoBD(String nome, String descricao, int quantidade, double preco) throws SQLException {
-        int id = this.maiorID() + 1;
-        Produto objeto = new Produto(id, nome, descricao, quantidade, preco);
+        // CORREÇÃO: Passamos ID 0, pois o banco irá gerar o ID correto.
+        Produto objeto = new Produto(0, nome, descricao, quantidade, preco);
         dao.InsertProdutoBD(objeto);
         return true;
     }
@@ -71,7 +72,6 @@ public class Produto {
         return dao.carregaProduto(id);
     }
 
-    // pega o maior ID para lógica manual se precisar
     public int maiorID() throws SQLException {
         return dao.maiorID();
     }
