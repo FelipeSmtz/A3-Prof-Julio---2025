@@ -1,22 +1,29 @@
 package View;
+
 import Model.Produto;
 import javax.swing.JOptionPane;
 
 public class Cadastro extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Cadastro.class.getName());
+    private int idProdutoEdit = 0;
 
     public Cadastro() {
         initComponents();
+        idproduto.setEditable(false);
+        idproduto.setText("Auto");
     }
-    int id;
-    String nome;
-    String descricao;
-    int quantidade;
-    double preco;
+
+    public void setProduto(Produto p) {
+        this.idProdutoEdit = p.getId();
+        idproduto.setText(String.valueOf(p.getId()));
+        nomeproduto.setText(p.getNome());
+        jTextArea3.setText(p.getDescricao());
+        qtdproduto.setText(String.valueOf(p.getQuantidade()));
+        precoproduto.setText(String.valueOf(p.getPreco()));
+    }
 
     @SuppressWarnings("unchecked")
-
+                    
     private void initComponents() {
 
         menuBar1 = new java.awt.MenuBar();
@@ -64,7 +71,10 @@ public class Cadastro extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
 
-        button1.setLabel("Ok");
+        setTitle("Cadastro de Produto");
+        setLocationRelativeTo(null);
+
+        button1.setLabel("Salvar");
         button1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button1ActionPerformed(evt);
@@ -78,48 +88,28 @@ public class Cadastro extends javax.swing.JFrame {
             }
         });
 
-        label1.setFont(new java.awt.Font("Arial", 0, 14));
+        label1.setFont(new java.awt.Font("Arial", 0, 14)); 
         label1.setText("ID do Produto:");
 
-        label2.setFont(new java.awt.Font("Arial", 0, 14));
+        label2.setFont(new java.awt.Font("Arial", 0, 14)); 
         label2.setText("Nome:");
 
-        label3.setFont(new java.awt.Font("Arial", 0, 14));
+        label3.setFont(new java.awt.Font("Arial", 0, 14)); 
         label3.setText("Descrição:");
 
-        label4.setFont(new java.awt.Font("Arial", 0, 14));
+        label4.setFont(new java.awt.Font("Arial", 0, 14)); 
         label4.setText("Quantidade:");
 
-        label5.setFont(new java.awt.Font("Arial", 0, 14));
+        label5.setFont(new java.awt.Font("Arial", 0, 14)); 
         label5.setText("Preço:");
 
         idproduto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        idproduto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                idprodutoActionPerformed(evt);
-            }
-        });
 
         nomeproduto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        nomeproduto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nomeprodutoActionPerformed(evt);
-            }
-        });
 
         qtdproduto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        qtdproduto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                qtdprodutoActionPerformed(evt);
-            }
-        });
 
         precoproduto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        precoproduto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                precoprodutoActionPerformed(evt);
-            }
-        });
 
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane2.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
@@ -189,9 +179,9 @@ public class Cadastro extends javax.swing.JFrame {
         );
 
         pack();
-    }
+    }                       
 
-    private void button1ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void button1ActionPerformed(java.awt.event.ActionEvent evt) {                                        
         try {
             String nome = nomeproduto.getText();
             String desc = jTextArea3.getText(); 
@@ -199,11 +189,19 @@ public class Cadastro extends javax.swing.JFrame {
             double prc = Double.parseDouble(precoproduto.getText());
     
             Produto produto = new Produto();
-            boolean sucesso = produto.InsertProdutoBD(nome, desc, qtd, prc);
+            boolean sucesso;
+            
+
+            if (this.idProdutoEdit == 0) {
+                sucesso = produto.InsertProdutoBD(nome, desc, qtd, prc);
+            } else {
+                sucesso = produto.UpdateProdutoBD(this.idProdutoEdit, nome, desc, qtd, prc);
+            }
     
             if (sucesso) {
                 JOptionPane.showMessageDialog(this, "Produto salvo com sucesso!");
                 this.dispose();
+      
             } else {
                 JOptionPane.showMessageDialog(this, "Erro ao salvar no banco.");
             }
@@ -212,57 +210,12 @@ public class Cadastro extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Erro inesperado: " + e.getMessage());
         }
-    }
+    }                                       
 
-    private void CancelarActionPerformed(java.awt.event.ActionEvent evt) {
+    private void CancelarActionPerformed(java.awt.event.ActionEvent evt) {                                         
+ 
         this.dispose();
-    }
-
-    private void idprodutoActionPerformed(java.awt.event.ActionEvent evt) {
-    try {
-        id = Integer.parseInt(idproduto.getText());
-} catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Por favor, digite um número válido de ID.");
-    }
-    
-    }
-
-    private void nomeprodutoActionPerformed(java.awt.event.ActionEvent evt) {
-    nome = nomeproduto.getText();  
-    }
-
-    private void qtdprodutoActionPerformed(java.awt.event.ActionEvent evt) {
-    try{
-        quantidade = Integer.parseInt(qtdproduto.getText());
-    }
-catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Por favor, digite um número válido de quantidade.");
-        }
-    }
-    private void precoprodutoActionPerformed(java.awt.event.ActionEvent evt) {
-    try{
-        preco = Double.parseDouble(precoproduto.getText());
-    }
-    catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Por favor, digite um número válido de preço.");
-    }
-    }
-    
-    public static void main(String args[]) {
-
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        java.awt.EventQueue.invokeLater(() -> new Cadastro().setVisible(true));
-    }
-
+    }                                        
     private java.awt.Button Cancelar;
     private java.awt.Button button1;
     private java.awt.Canvas canvas1;
@@ -282,5 +235,5 @@ catch (NumberFormatException e) {
     private java.awt.MenuBar menuBar1;
     private javax.swing.JTextField nomeproduto;
     private javax.swing.JTextField precoproduto;
-    private javax.swing.JTextField qtdproduto;
+    private javax.swing.JTextField qtdproduto;                 
 }
