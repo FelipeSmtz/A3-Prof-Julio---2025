@@ -215,7 +215,7 @@ public class Cadastro extends javax.swing.JFrame {
     }
 
     private void CancelarActionPerformed(java.awt.event.ActionEvent evt) {
-        System.exit(0);
+        this.dispose();
     }
 
     private void idprodutoActionPerformed(java.awt.event.ActionEvent evt) {
