@@ -61,7 +61,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
-
+        new GerenciaProduto().setVisible(true);
     }
 private void jMenuItemGerenciarEstoqueActionPerformed(java.awt.event.ActionEvent evt) {                                                        
 
