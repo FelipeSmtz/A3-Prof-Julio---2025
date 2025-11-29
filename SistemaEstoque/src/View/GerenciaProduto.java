@@ -1,4 +1,4 @@
-package view;
+package View;
 
 import DAO.ProdutoDAO;
 import Model.Produto;
@@ -11,6 +11,8 @@ public class GerenciaProduto extends javax.swing.JFrame {
     public GerenciaProduto() {
         initComponents();
         carregarTabela();
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     }
 
     private void carregarTabela() {
@@ -23,12 +25,11 @@ public class GerenciaProduto extends javax.swing.JFrame {
 
             for (Produto p : lista) {
                 modelo.addRow(new Object[]{
-                    p.getId_produto(),
-                    p.getNome_produto(),
-                    p.getDescricao_produto(),
-                    p.getQuantidade_estoque(),
+                    p.getId(),
+                    p.getNome(),
+                    p.getDescricao(),
+                    p.getQuantidade(),
                     p.getPreco(),
-                    p.getData_cadastro()
                 });
             }
 
@@ -44,9 +45,16 @@ public class GerenciaProduto extends javax.swing.JFrame {
             return;
         }
 
-        int id = (int) tabelaProdutos.getValueAt(linha, 0);
+        int id = Integer.parseInt(tabelaProdutos.getValueAt(linha, 0).toString());
+        String nome = tabelaProdutos.getValueAt(linha, 1).toString();
+        String desc = tabelaProdutos.getValueAt(linha, 2).toString();
+        int qtd = Integer.parseInt(tabelaProdutos.getValueAt(linha, 3).toString());
+        double preco = Double.parseDouble(tabelaProdutos.getValueAt(linha, 4).toString());
+
+        Produto p = new Produto(id, nome, desc, qtd, preco);
 
         Cadastro tela = new Cadastro(); 
+        tela.setProduto(p);
         tela.setVisible(true);
 
         dispose();
@@ -59,7 +67,7 @@ public class GerenciaProduto extends javax.swing.JFrame {
             return;
         }
 
-        int id = (int) tabelaProdutos.getValueAt(linha, 0);
+        int id = Integer.parseInt(tabelaProdutos.getValueAt(linha, 0).toString());
 
         int confirm = JOptionPane.showConfirmDialog(null,
                 "Tem certeza que deseja excluir o produto?",
@@ -92,7 +100,7 @@ public class GerenciaProduto extends javax.swing.JFrame {
         tabelaProdutos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {},
             new String [] {
-                "ID", "Nome", "Descrição", "Quantidade", "Preço", "Data Cadastro"
+                "ID", "Nome", "Descrição", "Quantidade", "Preço"
             }
         ));
         jScrollPane1.setViewportView(tabelaProdutos);
@@ -112,4 +120,25 @@ public class GerenciaProduto extends javax.swing.JFrame {
                 .addGap(150, 150, 150)
                 .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(50, 50, 50)
-               
+                .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnEditar)
+                    .addComponent(btnExcluir))
+                .addGap(0, 20, Short.MAX_VALUE))
+        );
+
+        pack();
+    }
+    
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnExcluir;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tabelaProdutos;
+}
