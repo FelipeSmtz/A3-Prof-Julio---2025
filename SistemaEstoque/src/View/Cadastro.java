@@ -9,8 +9,15 @@ public class Cadastro extends javax.swing.JFrame {
 
     public Cadastro() {
         initComponents();
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        idproduto.setEditable(false);
+
+        try {
+            Produto p = new Produto();
+            int proximo = p.maiorID() + 1;
+            idproduto.setText(String.valueOf(proximo));
+        } catch (Exception e) {
+            idproduto.setText("1");
+        }
     }
 
     public void setProduto(Produto p) {
@@ -20,7 +27,6 @@ public class Cadastro extends javax.swing.JFrame {
         jTextArea3.setText(p.getDescricao());
         qtdproduto.setText(String.valueOf(p.getQuantidade()));
         precoproduto.setText(String.valueOf(p.getPreco()));
-        
     }
 
     @SuppressWarnings("unchecked")
@@ -69,7 +75,7 @@ public class Cadastro extends javax.swing.JFrame {
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
 
         setTitle("Cadastro de Produto");
