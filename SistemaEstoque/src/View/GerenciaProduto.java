@@ -2,143 +2,205 @@ package View;
 
 import DAO.ProdutoDAO;
 import Model.Produto;
-import java.util.List;
+import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
-public class GerenciaProduto extends javax.swing.JFrame {
+public class GerenciaProduto extends JFrame {
+
+    private JTable tabela;
+    private JLabel lblTotal;
+    private JCheckBox chkEsgotados;
 
     public GerenciaProduto() {
         initComponents();
-        carregarTabela();
+        carregarDados();
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     }
 
-    private void carregarTabela() {
-        try {
-            ProdutoDAO dao = new ProdutoDAO();
-            List<Produto> lista = dao.getMinhaLista();
+    private void initComponents() {
+        setTitle("Gerenciamento de Estoque - Stock404");
+        setSize(900, 600);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLayout(new BorderLayout());
 
-            DefaultTableModel modelo = (DefaultTableModel) tabelaProdutos.getModel();
-            modelo.setRowCount(0);
+        JPanel panelTopo = new JPanel(new BorderLayout());
+        panelTopo.setBackground(new Color(245, 245, 245));
 
-            for (Produto p : lista) {
-                modelo.addRow(new Object[]{
-                    p.getId(),
-                    p.getNome(),
-                    p.getDescricao(),
-                    p.getQuantidade(),
-                    p.getPreco(),
-                });
+        JLabel titulo = new JLabel("  Controle de Estoque");
+        titulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        panelTopo.add(titulo, BorderLayout.WEST);
+        
+        JPanel panelFiltros = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelFiltros.setBackground(new Color(245, 245, 245));
+        
+        chkEsgotados = new JCheckBox("Ver apenas Esgotados");
+        chkEsgotados.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        chkEsgotados.setOpaque(false);
+        chkEsgotados.addActionListener(e -> carregarDados());
+        
+        lblTotal = new JLabel("Total: R$ 0,00");
+        lblTotal.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        lblTotal.setForeground(new Color(0, 100, 0));
+        
+        panelFiltros.add(chkEsgotados);
+        panelFiltros.add(new JLabel("   |   "));
+        panelFiltros.add(lblTotal);
+        panelFiltros.add(new JLabel("  "));
+        
+        panelTopo.add(panelFiltros, BorderLayout.EAST);
+        add(panelTopo, BorderLayout.NORTH);
+
+        tabela = new JTable();
+        tabela.setModel(new DefaultTableModel(
+            new Object [][] {},
+            new String [] {"ID", "Nome", "Descrição", "Preço Unit.", "Qtd", "Total Item"}
+        ) {
+            boolean[] canEdit = new boolean [] { false, false, false, false, false, false };
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
+            public Class<?> getColumnClass(int columnIndex) {
+                if(columnIndex == 0 || columnIndex == 4) return Integer.class;
+                return Object.class;
+            }
+        });
+        
+        tabela.setAutoCreateRowSorter(true);
+        
+        tabela.setRowHeight(25);
+        tabela.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        tabela.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        
+        JScrollPane scroll = new JScrollPane(tabela);
+        add(scroll, BorderLayout.CENTER);
 
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Erro ao carregar tabela: " + e.getMessage());
+        JPanel panelBotoes = new JPanel();
+        
+        JButton btnNovo = new JButton("Novo");
+        JButton btnEditar = new JButton("Editar");
+        JButton btnExcluir = new JButton("Excluir");
+        JButton btnAtualizar = new JButton("Atualizar Lista");
+
+        Font btnFont = new Font("Segoe UI", Font.PLAIN, 14);
+        btnNovo.setFont(btnFont);
+        btnEditar.setFont(btnFont);
+        btnExcluir.setFont(btnFont);
+        btnAtualizar.setFont(btnFont);
+
+        btnNovo.addActionListener(e -> abrirTelaCadastro(null));
+        btnEditar.addActionListener(e -> editarProduto());
+        btnExcluir.addActionListener(e -> excluirProduto());
+        btnAtualizar.addActionListener(e -> carregarDados());
+
+        panelBotoes.add(btnNovo);
+        panelBotoes.add(btnEditar);
+        panelBotoes.add(btnExcluir);
+        panelBotoes.add(btnAtualizar);
+        
+        add(panelBotoes, BorderLayout.SOUTH);
+    }
+
+    private void carregarDados() {
+        DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
+        modelo.setNumRows(0);
+        
+        ProdutoDAO dao = new ProdutoDAO();
+        double valorTotalEstoque = 0;
+        
+        for (Produto p : dao.getMinhaLista()) {
+            if (chkEsgotados.isSelected() && p.getQuantidade() > 0) {
+                continue;
+            }
+            
+            double totalItem = p.getPreco() * p.getQuantidade();
+            valorTotalEstoque += totalItem;
+
+            modelo.addRow(new Object[]{
+                p.getId(),
+                p.getNome(),
+                p.getDescricao(),
+                String.format("R$ %.2f", p.getPreco()),
+                p.getQuantidade(),
+                String.format("R$ %.2f", totalItem)
+            });
+        }
+        
+        lblTotal.setText(String.format("Total Estoque: R$ %.2f", valorTotalEstoque));
+    }
+
+    private void excluirProduto() {
+        int linha = tabela.getSelectedRow();
+        if (linha == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um produto para excluir.");
+            return;
+        }
+
+        int linhaModelo = tabela.convertRowIndexToModel(linha);
+        int id = (int) tabela.getModel().getValueAt(linhaModelo, 0);
+        
+        int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir?", "Excluir", JOptionPane.YES_NO_OPTION);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            ProdutoDAO dao = new ProdutoDAO();
+            if (dao.DeleteProdutoBD(id)) {
+                carregarDados();
+            }
         }
     }
 
     private void editarProduto() {
-        int linha = tabelaProdutos.getSelectedRow();
+        int linha = tabela.getSelectedRow();
         if (linha == -1) {
-            JOptionPane.showMessageDialog(null, "Selecione um produto!");
+            JOptionPane.showMessageDialog(this, "Selecione um produto para editar.");
             return;
         }
+        
+        int linhaModelo = tabela.convertRowIndexToModel(linha);
+        int id = (int) tabela.getModel().getValueAt(linhaModelo, 0);
+        
+        ProdutoDAO dao = new ProdutoDAO();
+        Produto p = dao.carregaProduto(id);
+        
+        if (p != null) {
+            abrirTelaCadastro(p);
+        }
+    }
 
-        int id = Integer.parseInt(tabelaProdutos.getValueAt(linha, 0).toString());
-        String nome = tabelaProdutos.getValueAt(linha, 1).toString();
-        String desc = tabelaProdutos.getValueAt(linha, 2).toString();
-        int qtd = Integer.parseInt(tabelaProdutos.getValueAt(linha, 3).toString());
-        double preco = Double.parseDouble(tabelaProdutos.getValueAt(linha, 4).toString());
-
-        Produto p = new Produto(id, nome, desc, qtd, preco);
-
-        Cadastro tela = new Cadastro(); 
-        tela.setProduto(p);
+    private void abrirTelaCadastro(Produto p) {
+        TelaCadastro tela;
+        if (p == null) {
+            tela = new TelaCadastro();
+        } else {
+            tela = new TelaCadastro(p);
+        }
+        
+        tela.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                carregarDados();
+            }
+        });
+        
         tela.setVisible(true);
-
-        dispose();
     }
 
-    private void excluirProduto() {
-        int linha = tabelaProdutos.getSelectedRow();
-        if (linha == -1) {
-            JOptionPane.showMessageDialog(null, "Selecione um produto para excluir!");
-            return;
-        }
-
-        int id = Integer.parseInt(tabelaProdutos.getValueAt(linha, 0).toString());
-
-        int confirm = JOptionPane.showConfirmDialog(null,
-                "Tem certeza que deseja excluir o produto?",
-                "Confirmar",
-                JOptionPane.YES_NO_OPTION);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            try {
-                ProdutoDAO dao = new ProdutoDAO();
-                dao.DeleteProdutoBD(id);
-                carregarTabela();
-                JOptionPane.showMessageDialog(null, "Produto removido!");
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Erro ao excluir: " + e.getMessage());
-            }
-        }
+    public static void main(String args[]) {
+        try { UIManager.setLookAndFeel(new FlatLightLaf()); } catch (Exception ex) {}
+        java.awt.EventQueue.invokeLater(() -> new GerenciaProduto().setVisible(true));
     }
-
-    @SuppressWarnings("unchecked")
-    private void initComponents() {
-
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tabelaProdutos = new javax.swing.JTable();
-        btnEditar = new javax.swing.JButton();
-        btnExcluir = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Gerenciar Produtos");
-
-        tabelaProdutos.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {},
-            new String [] {
-                "ID", "Nome", "Descrição", "Quantidade", "Preço"
-            }
-        ));
-        jScrollPane1.setViewportView(tabelaProdutos);
-
-        btnEditar.setText("Editar");
-        btnEditar.addActionListener(evt -> editarProduto());
-
-        btnExcluir.setText("Excluir");
-        btnExcluir.addActionListener(evt -> excluirProduto());
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(150, 150, 150)
-                .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50)
-                .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnEditar)
-                    .addComponent(btnExcluir))
-                .addGap(0, 20, Short.MAX_VALUE))
-        );
-
-        pack();
-    }
-    
-    private javax.swing.JButton btnEditar;
-    private javax.swing.JButton btnExcluir;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tabelaProdutos;
 }
