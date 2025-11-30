@@ -1,155 +1,147 @@
 package View;
 
-public class TelaCadastro extends javax.swing.JFrame {
+import DAO.ProdutoDAO;
+import Model.Produto;
+import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+
+public class TelaCadastro extends JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TelaCadastro.class.getName());
+    private JTextField txtNome;
+    private JTextField txtDescricao;
+    private JTextField txtPreco;
+    private JTextField txtQuantidade;
+    private int idProduto = -1; 
 
     public TelaCadastro() {
-        initComponents();
+        initComponents("Novo Produto");
+        configurarJanela();
     }
 
-    @SuppressWarnings("unchecked")
-    private void initComponents() {
-
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        txtNome = new javax.swing.JTextField();
-        txtDescricao = new javax.swing.JTextField();
-        txtPreco = new javax.swing.JTextField();
-        txtQuantidade = new javax.swing.JTextField();
-        btnSalvar = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jLabel1.setText("Nome");
-
-        jLabel2.setText("Descrição");
-
-        jLabel3.setText("Preço");
-
-        jLabel4.setText("Quantidade");
-
-        jLabel6.setText("Título");
-
-        txtNome.setText("jTextField1");
-
-        txtDescricao.setText("jTextField2");
-
-        txtPreco.setText("jTextField3");
-        txtPreco.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtPrecoActionPerformed(evt);
-            }
-        });
-
-        txtQuantidade.setText("jTextField4");
-
-        btnSalvar.setText("jButton1");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel5)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel4)
-                        .addGap(409, 409, 409))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtPreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(187, 187, 187)
-                        .addComponent(btnSalvar)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnSalvar)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel6)
-                        .addGap(34, 34, 34)
-                        .addComponent(jLabel5)))
-                .addGap(0, 72, Short.MAX_VALUE))
-        );
-
-        pack();
+    public TelaCadastro(Produto p) {
+        initComponents("Editar Produto");
+        configurarJanela();
+        preencherDados(p);
     }
 
-    private void txtPrecoActionPerformed(java.awt.event.ActionEvent evt) {
+    private void configurarJanela() {
+        setSize(600, 500);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }
+
+    private void preencherDados(Produto p) {
+        this.idProduto = p.getId();
+        txtNome.setText(p.getNome());
+        txtDescricao.setText(p.getDescricao());
+        txtPreco.setText(String.valueOf(p.getPreco()).replace(".", ","));
+        txtQuantidade.setText(String.valueOf(p.getQuantidade()));
+    }
+
+    private void initComponents(String titulo) {
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 10, 8, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+
+        JLabel lblTitulo = new JLabel(titulo);
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        lblTitulo.setHorizontalAlignment(JLabel.CENTER);
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.insets = new Insets(10, 10, 30, 10);
+        add(lblTitulo, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(8, 10, 8, 10);
+
+        addLabel("Nome:", 1, gbc);
+        txtNome = addTextField(1, gbc);
+
+        addLabel("Descrição:", 2, gbc);
+        txtDescricao = addTextField(2, gbc);
+
+        addLabel("Preço (R$):", 3, gbc);
+        txtPreco = addTextField(3, gbc);
+
+        addLabel("Quantidade:", 4, gbc);
+        txtQuantidade = addTextField(4, gbc);
+
+        JButton btnSalvar = new JButton("Salvar");
+        btnSalvar.setPreferredSize(new Dimension(200, 45));
+        btnSalvar.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnSalvar.addActionListener(e -> salvarProduto());
         
+        gbc.gridy = 5;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        gbc.insets = new Insets(30, 10, 10, 10);
+        add(btnSalvar, gbc);
     }
 
+    private void addLabel(String texto, int y, GridBagConstraints gbc) {
+        JLabel label = new JLabel(texto);
+        label.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        gbc.gridy = y;
+        gbc.gridx = 0;
+        gbc.weightx = 0.3;
+        add(label, gbc);
+    }
+
+    private JTextField addTextField(int y, GridBagConstraints gbc) {
+        JTextField field = new JTextField();
+        field.setPreferredSize(new Dimension(300, 35));
+        gbc.gridy = y;
+        gbc.gridx = 1;
+        gbc.weightx = 0.7;
+        add(field, gbc);
+        return field;
+    }
+
+    private void salvarProduto() {
+        try {
+            String nome = txtNome.getText();
+            String desc = txtDescricao.getText();
+            double preco = Double.parseDouble(txtPreco.getText().replace(",", "."));
+            int qtd = Integer.parseInt(txtQuantidade.getText());
+
+            if (nome.isEmpty() || desc.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Preencha todos os campos!");
+                return;
+            }
+
+            Produto p = new Produto(idProduto, nome, desc, qtd, preco);
+            ProdutoDAO dao = new ProdutoDAO();
+            
+            boolean sucesso;
+            if (idProduto == -1) {
+                sucesso = dao.InsertProdutoBD(p);
+            } else {
+                sucesso = dao.UpdateProdutoBD(p);
+            }
+
+            if (sucesso) {
+                JOptionPane.showMessageDialog(this, "Sucesso!");
+                dispose(); 
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Verifique os números (Preço e Quantidade).");
+        }
+    }
 
     public static void main(String args[]) {
-
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
-
+        try { UIManager.setLookAndFeel(new FlatLightLaf()); } catch (Exception ex) { }
         java.awt.EventQueue.invokeLater(() -> new TelaCadastro().setVisible(true));
     }
-
-    private javax.swing.JButton btnSalvar;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JTextField txtDescricao;
-    private javax.swing.JTextField txtNome;
-    private javax.swing.JTextField txtPreco;
-    private javax.swing.JTextField txtQuantidade;
-
 }
